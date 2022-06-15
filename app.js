@@ -36,42 +36,35 @@ app.get("/", (req, res) => {
 
 // get product by id
 app.get("/:category", (req, res) => {
-    let category = req.params.category;
-    connection.query(
-        "SELECT * FROM product WHERE category = ?",
-        [category],
-        function (error, results, fields) {
-            if (error) throw error;
-            let respuesta = JSON.parse(JSON.stringify(results));
-            /* connection.end(); */
-            console.log(respuesta);
-            res.send(respuesta);
-        }
-    );
-}
-);
+  let category = req.params.category;
+  connection.query(
+    "SELECT * FROM product WHERE category = ?",
+    [category],
+    function (error, results, fields) {
+      if (error) throw error;
+      let respuesta = JSON.parse(JSON.stringify(results));
+      /* connection.end(); */
+      console.log(respuesta);
+      res.send(respuesta);
+    }
+  );
+});
 
 // get product by id
 app.get("/product/:name", (req, res) => {
-    let name = req.params.name;
-    connection.query(
-        "SELECT * FROM product WHERE name like ?",
-        ['%' + name + '%'],
-        function (error, results, fields) {
-            if (error) throw error;
-            let respuesta = JSON.parse(JSON.stringify(results));
-            /* connection.end(); */
-            console.log(respuesta);
-            res.send(respuesta);
-        }
-    );
-}
-);
-
-
-
-
-
+  let name = req.params.name;
+  connection.query(
+    "SELECT * FROM product WHERE name like ?",
+    ["%" + name + "%"],
+    function (error, results, fields) {
+      if (error) throw error;
+      let respuesta = JSON.parse(JSON.stringify(results));
+      /* connection.end(); */
+      console.log(respuesta);
+      res.send(respuesta);
+    }
+  );
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
