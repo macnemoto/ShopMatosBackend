@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
+const op = Sequelize.Op;
 const sequelize = require("./config/connection");
 const express = require("express");
 const app = express();
@@ -16,43 +17,38 @@ conection = async () => {
 };
 conection();
 
-app.get("/", (req, res) => {
-
-  Products.findAll({ raw: true }).then((results) => {
+app.get("/", async (req, res) => {
+  await Products.findAll({ raw: true }).then((results) => {
     console.log(results);
     res.send(results);
   });
 });
 
 // get product by id
-app.get("/:category", (req, res) => {
-
+app.get("/:category", async (req, res) => {
   let name = req.params.category;
-   Products.findAll({raw:true, where: { category: `${name}` } }).then((result) => {
-    console.log(result);
-    res.send(result);
- 
-
-  })
-
+  await Products.findAll({ raw: true, where: { category: `${name}` } }).then(
+    (result) => {
+      console.log(result);
+      res.send(result);
+    }
+  );
 });
 
 // get product by id
-app.get("/product/:name",(req, res) => {
-  /*   let name = req.params.name;
-  connection.query(
-    "SELECT * FROM product WHERE name like ?",
-    ["%" + name + "%"],
-    function (error, results, fields) {
-      if (error) throw error;
-      let respuesta = JSON.parse(JSON.stringify(results));
-     
-      console.log(respuesta);
-      res.send(respuesta);
-    }
-  );
- */
-
+app.get("/product/:nombre", async (req, res) => {
+  let nombre = req.params.nombre;
+  await Products.findAll({
+    raw: true,
+    where: {
+      name: {
+        [op.like]: "%" + nombre + "%",
+      },
+    },
+  }).then((result) => {
+    console.log(result);
+    res.send(result);
+  });
 });
 
 app.listen(port, () => {
