@@ -1,69 +1,58 @@
+require("dotenv").config();
+const { Sequelize } = require("sequelize");
+const sequelize = require("./config/connection");
 const express = require("express");
-const bodyParser = require("body-parser");
 const app = express();
-const port = 3000;
+const port = process.env.DB_PORT || 3000;
+const Products = require("./models/product");
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+conection = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+};
+conection();
 
-var mysql = require("mysql");
-const { json } = require("express/lib/response");
-
-var connection = mysql.createConnection({
-  host: "mdb-test.c6vunyturrl6.us-west-1.rds.amazonaws.com",
-  user: "bsale_test",
-  password: "bsale_test",
-  database: "bsale_test",
-});
-
-connection.connect((error) => {
-  if (error) throw error;
-  console.log("Connected to database");
-});
-setInterval(function () {
-  connection.query("SELECT 1");
-}, 4000);
-// default route
 app.get("/", (req, res) => {
-  connection.query("SELECT * FROM product", function (error, results, fields) {
-    if (error) throw error;
 
-    let respuesta = JSON.parse(JSON.stringify(results));
-    /* connection.end(); */
-    res.send(respuesta);
+  Products.findAll({ raw: true }).then((results) => {
+    console.log(results);
+    res.send(results);
   });
 });
 
 // get product by id
 app.get("/:category", (req, res) => {
-  let category = req.params.category;
-  connection.query(
-    "SELECT * FROM product WHERE category = ?",
-    [category],
-    function (error, results, fields) {
-      if (error) throw error;
-      let respuesta = JSON.parse(JSON.stringify(results));
-      /* connection.end(); */
-      console.log(respuesta);
-      res.send(respuesta);
-    }
-  );
+
+  let name = req.params.category;
+   Products.findAll({raw:true, where: { category: `${name}` } }).then((result) => {
+    console.log(result);
+    res.send(result);
+ 
+
+  })
+
 });
 
 // get product by id
-app.get("/product/:name", (req, res) => {
-  let name = req.params.name;
+app.get("/product/:name",(req, res) => {
+  /*   let name = req.params.name;
   connection.query(
     "SELECT * FROM product WHERE name like ?",
     ["%" + name + "%"],
     function (error, results, fields) {
       if (error) throw error;
       let respuesta = JSON.parse(JSON.stringify(results));
-      /* connection.end(); */
+     
       console.log(respuesta);
       res.send(respuesta);
     }
   );
+ */
+
 });
 
 app.listen(port, () => {
