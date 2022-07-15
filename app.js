@@ -51,6 +51,20 @@ app.get("/product/:nombre", async (req, res) => {
   });
 });
 
+//pagination 
+app.get("/product/:nombre", async (req, res) => {
+
+
+
+
+
+
+  
+  });
+
+
+
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
